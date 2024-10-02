@@ -4,11 +4,11 @@ myForm.addEventListener("submit", saveToDatabase);
 async function saveToDatabase(e) {
   try {
     e.preventDefault();
-    let expAmt = e.target.expAmt.value;
+    let expenseAmount = e.target.expAmt.value;
     let description = e.target.description.value;
     let category = e.target.category.value;
 
-    let obj = { expAmt: expAmt, description: description, category: category };
+    let obj = { expenseAmount : expenseAmount, description: description, category: category };
 
     showOnScreen(obj);
 
@@ -27,7 +27,7 @@ async function saveToDatabase(e) {
 function showOnScreen(obj) {
   let ul = document.getElementById("mylist");
   let li = document.createElement("li");
-  li.textContent = `${obj.expAmt} --- ${obj.description} --- ${obj.category}  `;
+  li.textContent = `${obj.expenseAmount} --- ${obj.description} --- ${obj.category}  `;
 
   let delBtn = document.createElement("button");
   delBtn.innerText = "DELETE";
@@ -45,10 +45,23 @@ function showOnScreen(obj) {
   });
 
   editBtn.addEventListener("click", () => {
-    document.getElementById("expAmt").value = obj.expAmt;
+    document.getElementById("expAmt").value = obj.expenseAmount;
     document.getElementById("description").value = obj.description;
     document.getElementById("category").value = obj.category;
 
     ul.removeChild(li);
   });
 }
+
+window.addEventListener('DOMContentLoaded',()=>{
+  axios.get("http://localhost:3000/expense/get-all-expenses").then((res)=>{
+    console.log(res);
+    console.log("Res data is",res.data.expensesAll);
+
+    res.data.expensesAll.forEach(element => {
+      showOnScreen(element);
+    });
+  }).catch((err)=>{
+    console.log("FE ERROR IS",err);
+  })
+})
