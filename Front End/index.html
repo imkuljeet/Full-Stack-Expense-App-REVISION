@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense App</title>
+  </head>
+  <body>
+    <form id="myform">
+      <label for="expAmt">Choose Expense Amount : </label>
+      <input type="number" id="expAmt" name="expAmt" required />
+
+      <label for="description">Description:</label>
+      <input list="description" name="description" id="description" />
+      <datalist id="description">
+        <option value="Petrol"></option>
+        <option value="On Vacation"></option>
+        <option value="Diesel"></option>
+        <option value="Party"></option>
+      </datalist>
+
+      <label for="category">Choose your category:</label>
+      <select id="category" name="category">
+        <option>Movies</option>
+        <option>Vacation</option>
+        <option>Diesel</option>
+        <option>Water Park</option>
+        <option>Wildlife Sanctuary</option>
+      </select>
+
+      <button type="submit">Add Expense</button>
+    </form>
+
+    <ul id="mylist"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    <script src="index.js"></script>
+
+  </body>
+</html>
