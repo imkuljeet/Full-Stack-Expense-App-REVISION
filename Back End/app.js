@@ -3,43 +3,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const sequelize = require("./util/database");
 
-const Expense = require("./models/expense");
+const expenseRoutes = require("./routes/expense");
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post("/expense/upload-my-data", (req, res) => {
-  const { expenseAmount, description, category } = req.body;
-
-  Expense.create({expenseAmount : expenseAmount, description : description, category : category}).then((result)=>{
-    // console.log("Result is >>",result);
-    res.status(200).json({expenseDetails : result});
-  }).catch((err)=>{
-    console.log(err);
-    res.status(500).json({error : "Internal Server Error"});
-  })
-});
-
-app.get("/expense/get-all-expenses", (req, res) => {
-    Expense.findAll().then((result)=>{
-        res.status(200).json({expensesAll : result});
-    }).catch(err=>{
-        console.log("ERROR IS",err);
-    })
-});
-
-app.delete("/expense/delete-expense/:id", (req, res) => {
-  const expId = req.params.id;
-  // console.log("Success deleted",expId);
-
-  Expense.destroy({where : {id : expId}}).then(()=>{
-    res.status(200).json({success : "successfully deleted expense"});
-  })
-
-
-});
+app.use('/expense',expenseRoutes);
 
 sequelize
   .sync()
