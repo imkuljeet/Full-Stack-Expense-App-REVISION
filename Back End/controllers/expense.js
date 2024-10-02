@@ -1,40 +1,57 @@
 const Expense = require("../models/expense");
 
-const uploadData = (req, res) => {
+const uploadData = async (req, res) => {
+  try {
     const { expenseAmount, description, category } = req.body;
-  
-    Expense.create({
-      expenseAmount: expenseAmount,
-      description: description,
-      category: category,
-    })
-      .then((result) => {
-        // console.log("Result is >>",result);
-        res.status(200).json({ expenseDetails: result });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json({ error: "Internal Server Error" });
-      });
-}
 
-const getAllExpenses = (req, res) => {
-    Expense.findAll()
-      .then((result) => {
-        res.status(200).json({ expensesAll: result });
-      })
-      .catch((err) => {
-        console.log("ERROR IS", err);
-      });
-}
+    // Validate input
+    if (!expenseAmount || !description || !category) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
-const deleteExpense = (req, res) => {
-    const expId = req.params.id;
-    // console.log("Success deleted",expId);
-  
-    Expense.destroy({ where: { id: expId } }).then(() => {
-      res.status(200).json({ success: "successfully deleted expense" });
-    });
-}
+    // Create a new expense entry
+    const expenseDetails = await Expense.create({ expenseAmount, description, category });
+
+    // Return the created expense details
+    return res.status(200).json({ expenseDetails });
+  } catch (err) {
+    console.error("Error creating expense:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getAllExpenses = async (req, res) => {
+  try {
+    // Fetch all expenses from the database
+    const expenses = await Expense.findAll();
+    
+    // Return the retrieved expenses
+    return res.status(200).json({ expenses });
+  } catch (err) {
+    console.error("Error fetching expenses:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const deleteExpense = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Delete the expense by id
+    const deletedRows = await Expense.destroy({ where: { id } });
+
+    if (deletedRows === 0) {
+      // If no rows were deleted, return a 404 Not Found response
+      return res.status(404).json({ error: "Expense not found" });
+    }
+
+    // Return success response if deletion was successful
+    return res.status(200).json({ message: "Successfully deleted expense" });
+  } catch (err) {
+    console.error("Error deleting expense:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 module.exports = { uploadData, getAllExpenses, deleteExpense };
