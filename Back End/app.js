@@ -30,6 +30,17 @@ app.get("/expense/get-all-expenses", (req, res) => {
     })
 });
 
+app.delete("/expense/delete-expense/:id", (req, res) => {
+  const expId = req.params.id;
+  // console.log("Success deleted",expId);
+
+  Expense.destroy({where : {id : expId}}).then(()=>{
+    res.status(200).json({success : "successfully deleted expense"});
+  })
+
+
+});
+
 sequelize
   .sync()
   .then(() => {

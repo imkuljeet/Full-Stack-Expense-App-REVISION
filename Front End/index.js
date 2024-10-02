@@ -28,6 +28,7 @@ function showOnScreen(obj) {
   let ul = document.getElementById("mylist");
   let li = document.createElement("li");
   li.textContent = `${obj.expenseAmount} --- ${obj.description} --- ${obj.category}  `;
+  let expId = obj.id;
 
   let delBtn = document.createElement("button");
   delBtn.innerText = "DELETE";
@@ -41,7 +42,11 @@ function showOnScreen(obj) {
   ul.appendChild(li);
 
   delBtn.addEventListener("click", () => {
-    ul.removeChild(li);
+    axios.delete(`http://localhost:3000/expense/delete-expense/${expId}`).then(()=>{
+      ul.removeChild(li);
+    }).catch((err)=>{
+      console.log("error deleting",err);
+    })
   });
 
   editBtn.addEventListener("click", () => {
@@ -49,7 +54,11 @@ function showOnScreen(obj) {
     document.getElementById("description").value = obj.description;
     document.getElementById("category").value = obj.category;
 
-    ul.removeChild(li);
+    axios.delete(`http://localhost:3000/expense/delete-expense/${expId}`).then(()=>{
+      ul.removeChild(li);
+    }).catch((err)=>{
+      console.log("error deleting",err);
+    })
   });
 }
 
